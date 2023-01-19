@@ -1,4 +1,3 @@
-
 const Header = (props) => {
   console.log(props)
   return (
