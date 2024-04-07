@@ -6,5 +6,6 @@ How to run locally:
 - Run `npm run dev`
   
 - Result
-<img src="./public\part2.1_2.5.png" width="800" height="500">
+<img src=".\public\PhoneBookGiF.gif" width="800" height="500">
+<img src=".\public\phonebook.png" width="800" height="500">
 
