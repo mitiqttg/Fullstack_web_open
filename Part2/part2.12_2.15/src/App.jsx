@@ -3,6 +3,8 @@ import Person from './components/Person'
 import Filter from './components/Filter' 
 import PersonForm from './components/PersonForm' 
 import axios from 'axios'
+import personService from './services/persons'
+
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -11,11 +13,11 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
 
   useEffect(() => {
-    axios
-    .get('http://localhost:3001/persons')
-    .then(response => {
-      setPersons(response.data)
-      setFilteredPersons(response.data)
+    personService
+    .getAll()
+    .then(initialPersons => {
+      setPersons(initialPersons)
+      setFilteredPersons(initialPersons)
     })
   }, [])
   useEffect(() => {
@@ -29,15 +31,45 @@ const App = () => {
       number: newNumber,
       id: persons.length + 1,
     }
-    setPersons(persons.concat(personsObject))
-    setNewName('')
-    setNewNumber('')
-    const inputValue = document.getElementById('filterName').value.toLowerCase()
-    if (!inputValue) {
-      setFilteredPersons(persons.concat(personsObject))
-    } else {
-      setFilteredPersons(persons.concat(personsObject).filter(person => person.name.toLowerCase().includes(inputValue)))
-    }
+    noteService
+      .create(personsObject)
+        .then(returnedPerson => {
+        setNotes(notes.concat(returnedPerson))
+        setNewNote('')
+        setPersons(persons.concat(returnedPerson))
+        setNewName('')
+        setNewNumber('')
+        const inputValue = document.getElementById('filterName').value.toLowerCase()
+        if (!inputValue) {
+          setFilteredPersons(persons.concat(returnedPerson))
+        } else {
+          setFilteredPersons(persons.concat(returnedPerson).filter(person => person.name.toLowerCase().includes(inputValue)))
+        }
+      })
+  }
+
+  const deletePerson = id => {
+    const url = `http://localhost:3001/persons/${id}`
+    const person = persons.find(n => n.id === id)
+    const changedNote = { ...note, important: !note.important }
+    // delete function
+    noteService
+      .deletePerson(id)
+        .then(returnedNote => {
+        setNotes(notes.map(note => note.id !== id ? note : returnedNote))
+        confirm(`Delete ${person.name} ?`)
+      })
+      .catch(error => {
+        alert(
+          ` '${person.name}' was already deleted from server`
+        )
+        setNotes(notes.filter(n => n.id !== id))
+      })
+  }
+  //Change the functionality so that if a number is added to an already existing user, the new number will replace the old number. It's recommended to use the HTTP PUT method for updating the phone number.
+  const updatePerson = (id, newObject) => {
+    const request = axios.put(`${baseUrl}/${id}`, newObject)
+    return request.then(response => response.data)
   }
 
   const handleNameChange = (event) => {
