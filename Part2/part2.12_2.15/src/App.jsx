@@ -28,7 +28,7 @@ const App = () => {
   const addPerson = (event) => {
     let allPersons = persons.map(({ name }) => name)
     if (!allPersons.includes(newName)) {
-      console.log('Name is already in the list')
+      console.log('Name is not in the list')
       event.preventDefault()
       const personsObject = {
         name: newName,
@@ -38,6 +38,7 @@ const App = () => {
       personService
       .create(personsObject)
       .then(returnedPerson => {
+        console.log('Added person', returnedPerson)
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
@@ -49,42 +50,54 @@ const App = () => {
         }
       })
     } else {
+      console.log('Name is IN the list')
       event.preventDefault()
       const oldPerson = persons.filter((person) => person.name === newName)
-      const personsObject = {
-        name: oldPerson.name,
-        number: newNumber,
-        id: oldPerson.id,
-      }
-
-      personService
-      .updatePerson(personsObject.id, personsObject)
-      .then(returnedPerson => {
-        setPersons(persons.concat(returnedPerson))
-        setNewName('')
-        setNewNumber('')
-        const inputValue = document.getElementById('filterName').value.toLowerCase()
-        if (!inputValue) {
-          setFilteredPersons(persons.concat(returnedPerson))
-        } else {
-          setFilteredPersons(persons.concat(returnedPerson).filter(person => person.name.toLowerCase().includes(inputValue)))
+      console.log("The existing person is", oldPerson[0].name)
+      let result = confirm(`${oldPerson[0].name} is already added to phonebook, replace the old number with a new one?`)
+      if (result === true)  {
+        const personsObject = {
+          name: oldPerson[0].name,
+          number: newNumber,
+          id: oldPerson[0].id,
         }
-      })
+        // IT UPDATE THE PERSON AFTER RELOADING THE PAGE => MAKE IT REACTIVE
+        personService
+        .updatePerson(personsObject.id, personsObject)
+        .then((response) => {
+          setPersons(persons)
+          setNewName('')
+          setNewNumber('')
+          setFilteredPersons(persons)
+          console.log(response)
+        })
+        .catch(error => {
+          console.error('There was an error updating number', error);
+        });
+      } else {
+        console.log('User number is not updated');
+      }
     }
   }
 
-  const deletePerson = (id) => {  
-    axios.delete(`http://localhost:3001/persons/${id}/`)
-      .then((response) => {
-        confirm(`Delete ?`)
-        const newPerson = persons.filter((person) => person.id !== id)
-        setPersons(newPerson)
-        setFilteredPersons(newPerson)
-        console.log('User deleted successfully:', response.data);
-      })
-      .catch(error => {
-        console.error('There was an error!', error);
-      });
+  const deletePerson = (id) => { 
+    const thePerson = persons.filter(person => person.id === id)
+    console.log("we are checking", thePerson[0].name)
+    let result = confirm(`Delete ${thePerson[0].name}?`)
+    if (result === true)  {
+        axios.delete(`http://localhost:3001/persons/${id}/`)
+          .then((response) => {
+          const newPerson = persons.filter((person) => person.id !== id)
+          setPersons(newPerson)
+          setFilteredPersons(newPerson)
+          console.log('User deleted successfully:', response.data);
+        })
+        .catch(error => {
+          console.error('There was an error!', error);
+        });
+    } else {
+      console.log('User deleted unsuccessfully:');
+    }
   }
   
   const handleNameChange = (event) => {

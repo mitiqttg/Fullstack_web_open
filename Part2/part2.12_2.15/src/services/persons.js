@@ -27,7 +27,7 @@ const deletePerson = (id) => {
 }
 
 const updatePerson = (id, newNumber) => {
-  return axios.put(`${baseUrl}/${id}`, newNumber)
+  return axios.put(`${baseUrl}/`+id, newNumber)
   .then(response => response.data)
   .catch(error => {
     console.error('There was an error updating!', error);
