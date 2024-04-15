@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import Person from './components/Person'
 import Filter from './components/Filter' 
 import PersonForm from './components/PersonForm' 
-import axios from 'axios'
 import personService from './services/persons'
+import axios from 'axios'
 
 
 const App = () => {
@@ -20,22 +20,24 @@ const App = () => {
       setFilteredPersons(initialPersons)
     })
   }, [])
+  let i = persons.length
   useEffect(() => {
     localStorage.setItem('phonebookPersons', JSON.stringify(persons))
   }, [persons])
 
   const addPerson = (event) => {
-    event.preventDefault()
-    const personsObject = {
-      name: newName,
-      number: newNumber,
-      id: persons.length + 1,
-    }
-    noteService
+    let allPersons = persons.map(({ name }) => name)
+    if (!allPersons.includes(newName)) {
+      console.log('Name is already in the list')
+      event.preventDefault()
+      const personsObject = {
+        name: newName,
+        number: newNumber,
+        id: Math.random().toString(),
+      }
+      personService
       .create(personsObject)
-        .then(returnedPerson => {
-        setNotes(notes.concat(returnedPerson))
-        setNewNote('')
+      .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
         setNewNumber('')
@@ -46,32 +48,45 @@ const App = () => {
           setFilteredPersons(persons.concat(returnedPerson).filter(person => person.name.toLowerCase().includes(inputValue)))
         }
       })
+    } else {
+      event.preventDefault()
+      const oldPerson = persons.filter((person) => person.name === newName)
+      const personsObject = {
+        name: oldPerson.name,
+        number: newNumber,
+        id: oldPerson.id,
+      }
+
+      personService
+      .updatePerson(personsObject.id, personsObject)
+      .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson))
+        setNewName('')
+        setNewNumber('')
+        const inputValue = document.getElementById('filterName').value.toLowerCase()
+        if (!inputValue) {
+          setFilteredPersons(persons.concat(returnedPerson))
+        } else {
+          setFilteredPersons(persons.concat(returnedPerson).filter(person => person.name.toLowerCase().includes(inputValue)))
+        }
+      })
+    }
   }
 
-  const deletePerson = id => {
-    const url = `http://localhost:3001/persons/${id}`
-    const person = persons.find(n => n.id === id)
-    const changedNote = { ...note, important: !note.important }
-    // delete function
-    noteService
-      .deletePerson(id)
-        .then(returnedNote => {
-        setNotes(notes.map(note => note.id !== id ? note : returnedNote))
-        confirm(`Delete ${person.name} ?`)
+  const deletePerson = (id) => {  
+    axios.delete(`http://localhost:3001/persons/${id}/`)
+      .then((response) => {
+        confirm(`Delete ?`)
+        const newPerson = persons.filter((person) => person.id !== id)
+        setPersons(newPerson)
+        setFilteredPersons(newPerson)
+        console.log('User deleted successfully:', response.data);
       })
       .catch(error => {
-        alert(
-          ` '${person.name}' was already deleted from server`
-        )
-        setNotes(notes.filter(n => n.id !== id))
-      })
+        console.error('There was an error!', error);
+      });
   }
-  //Change the functionality so that if a number is added to an already existing user, the new number will replace the old number. It's recommended to use the HTTP PUT method for updating the phone number.
-  const updatePerson = (id, newObject) => {
-    const request = axios.put(`${baseUrl}/${id}`, newObject)
-    return request.then(response => response.data)
-  }
-
+  
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
@@ -97,11 +112,18 @@ const App = () => {
     
       <h2>Add a new</h2>
       
-      <PersonForm newName={newName} newNumber={newNumber} handleNumberChange={handleNumberChange} handleNameChange={handleNameChange} addPerson={addPerson}/>
+      <PersonForm newName={newName} newNumber={newNumber} handleNumberChange={handleNumberChange} handleNameChange={handleNameChange} addPerson={addPerson} />
 
       <h2>Numbers</h2>
 
-      <Person filteredPersons={filteredPersons} />
+      <ul>
+        { filteredPersons.map(person => 
+          <li key={person.id}> 
+             {person.name} {person.number } 
+            <button type="button" onClick={() => deletePerson(person.id)}> Delete </button>
+          </li>
+        )}
+      </ul>
     </div>
   )
 }

@@ -6,7 +6,7 @@ How to run locally:
 - Run  `npm install axios`
 - Run  `npm install json-server --save-dev`
 - Run `npm run server`
-- Open/split another Integrated Terminal at folder part2.1_2.5
+- Open/split another Integrated Terminal at folder part2.11
 - Run `npm run dev`
   
 - Result
