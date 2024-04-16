@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import Person from './components/Person'
 import Filter from './components/Filter' 
 import PersonForm from './components/PersonForm' 
 import personService from './services/persons'
@@ -28,8 +27,8 @@ const App = () => {
   const addPerson = (event) => {
     let allPersons = persons.map(({ name }) => name)
     if (!allPersons.includes(newName)) {
-      console.log('Name is not in the list')
       event.preventDefault()
+      console.log('Name is not in the list')
       const personsObject = {
         name: newName,
         number: newNumber,
@@ -50,8 +49,8 @@ const App = () => {
         }
       })
     } else {
-      console.log('Name is IN the list')
       event.preventDefault()
+      console.log('Name is IN the list')
       const oldPerson = persons.filter((person) => person.name === newName)
       console.log("The existing person is", oldPerson[0].name)
       let result = confirm(`${oldPerson[0].name} is already added to phonebook, replace the old number with a new one?`)
@@ -61,21 +60,27 @@ const App = () => {
           number: newNumber,
           id: oldPerson[0].id,
         }
-        // IT UPDATE THE PERSON AFTER RELOADING THE PAGE => MAKE IT REACTIVE
         personService
         .updatePerson(personsObject.id, personsObject)
-        .then((response) => {
-          setPersons(persons)
+        .then(returnedPerson => {
+          console.log('Added person', returnedPerson)
+          const updatedPerson = persons.filter(person => person.id !== returnedPerson.id).concat(returnedPerson)
           setNewName('')
           setNewNumber('')
-          setFilteredPersons(persons)
-          console.log(response)
+          const inputValue = document.getElementById('filterName').value.toLowerCase()
+          if (!inputValue) {
+            setFilteredPersons(updatedPerson)
+          } else {
+            setFilteredPersons(updatedPerson.filter(person => person.name.toLowerCase().includes(inputValue)))
+          }
         })
         .catch(error => {
           console.error('There was an error updating number', error);
         });
       } else {
         console.log('User number is not updated');
+        setNewName('')
+        setNewNumber('')
       }
     }
   }
