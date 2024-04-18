@@ -3,13 +3,13 @@ import Filter from './components/Filter'
 import countryService from './services/country'
 import Notification from './components/Notification'
 import Country from './components/Country'
+import axios from 'axios'
 
 
 const App = () => {
   const api_key = import.meta.env.VITE_SOME_KEY
   const [country, setCountry] = useState([])
   const [filteredCountry, setFilteredCountry] = useState([])
-  const [displayCountry, setDisplayCountry] = useState([])
   const [message, setMessage] = useState(null)
   
   const [newCountryName, setNewCountryName] = useState('')
@@ -17,31 +17,40 @@ const App = () => {
   const [newArea, setArea] = useState('')
   const [newFlag, setFlag] = useState('') 
   const [newLanguages, setLanguages] = useState([])
+
   const [newTemp, setTemp] = useState(0) 
   const [newWeatherIcon, setWeatherIcon] = useState('') 
   const [newWind, setWind] = useState('') 
+
+  const [newLat, setLat] = useState(0) 
+  const [newLon, setLon] = useState(0) 
  
   useEffect(() => {
     countryService
     .getAll()
     .then(initialcountry => {
       setCountry(initialcountry) 
-      // setFilteredCountry(null)
     })
   }, [])
-  // useEffect(() => {
-  //   localStorage.setItem('phonebookcountry', JSON.stringify(country))
-  // }, [country])
 
   const handleFilterCountry = (event) => {
     const inputValue = event.target.value.toLowerCase().trim()
-    console.log("input value is ", inputValue ? true : false)
     if (!inputValue) {
       setCountry(country)
-      console.log("This is the current country", country)
       setMessage(``)
-      setDisplayCountry([])
+
       setNewCountryName("")
+      setCapital('')
+      setArea('')
+      setFlag('')
+      setLanguages('')
+
+      setTemp(0)
+      setWeatherIcon('')
+      setWind('')
+      
+      setLat('')
+      setLon('')
     } else {
       setFilteredCountry([])
       setNewCountryName("")
@@ -53,54 +62,77 @@ const App = () => {
         setFilteredCountry(filtered)
       } else if (filtered.length === 1) {
         setMessage(``)
+
         countryService
         .getCountry(filtered[0].name.common)
         .then(
           returnedCountry => {
             console.log('Navigate to one country', typeof returnedCountry)
-            setDisplayCountry(returnedCountry)
             setNewCountryName(returnedCountry.name.common)
             setCapital(returnedCountry.capital)
             setArea(returnedCountry.area)
             setFlag(returnedCountry.flags.png)
-            setLanguages(returnedCountry.languages)
-            
-            console.log('The country is', displayCountry)
-            console.log('The country flag is', displayCountry.flags.png) 
+            setLanguages(returnedCountry.languages)            
           }
         )
+        console.log('API KEY is', api_key)
         /// Adding temp weather
         countryService
-        .getWeatherCountryCapital(filtered[0].name.common, api_key)
+        .getLocationCountryCapital(newCapital, api_key)
+        .then(
+          returnedCountry => {
+            setLat(returnedCountry.lat)
+            setLon(returnedCountry.lon)
+          }
+        )
+        countryService
+        .getWeatherCountryCapital(newLat, newLon, api_key)
         .then(
           returnedWeather => {
-            console.log('Navigate to one weather', typeof returnedWeather)
-            setTemp(returnedWeather.main.temp -273.15)
-            setWeatherIcon(returnedWeather.weather.icon)
-            setWind(returnedCountry.languages)
-            // console.log('The country is', displayCountry)
-            // console.log('The country flag is', displayCountry.flags.png) 
+
+            setTemp(Number(returnedWeather.main.temp -273.15).toFixed(2));
+            setWeatherIcon(`https://openweathermap.org/img/wn/${returnedWeather.weather[0].icon}@2x.png`)
+            setWind(returnedWeather.wind.speed)
           }
         )
       } else if (filtered.length === 0) {
         setMessage(`No country found for this filter`)
+        setLat('')
+        setLon('')
+        setFilteredCountry([])
+        setNewCountryName('')
+        setCapital('')
+        setArea('')
+        setFlag('')
+        setLanguages('')
       } else {
         setFilteredCountry([])
         setMessage(`Too many matches, specify for another filter`)
       }
-      console.log('The country is after specified', displayCountry.name.common ? displayCountry.name.common : "Empty")
     }
   }
-
-  const showCountry = (country) => {
+  
+  const showCountry = (countryObject) => {
     setMessage(``)
     setFilteredCountry([])
-    setNewCountryName(country.name.common)
-    setCapital(country.capital)
-    setArea(country.area)
-    setFlag(country.flags.png)
-    setLanguages(country.languages)
-    /// Adding temp weather
+    
+    setNewCountryName(countryObject.name.common)
+    setCapital(countryObject.capital[0])
+    setArea(countryObject.area)
+    setFlag(countryObject.flags.png)
+    setLanguages(countryObject.languages)
+
+    //  Promise cannot be executyed here somehow, only the data not from promises got loaded
+
+    countryService
+      .getWeatherCountryCapital(countryObject.capitalInfo.latlng[0], countryObject.capitalInfo.latlng[1], api_key)
+      .then(
+        returnedWeather => {
+          setTemp(Number(returnedWeather.main.temp -273.15).toFixed(2));
+          setWeatherIcon(`https://openweathermap.org/img/wn/${returnedWeather.weather[0].icon}@2x.png`)
+          setWind(returnedWeather.wind.speed)
+        }
+    )
   }
 
   return (
@@ -109,7 +141,7 @@ const App = () => {
 
       <Filter filterName="filterCountry" handleFilterCountry={handleFilterCountry} />
       <Notification message={message} type={"notify"} />
-      <h2>Countries</h2>
+      { filteredCountry.length >= 2 ? <h2>Countries</h2> : null }
       <ul>
         { 
           filteredCountry.map(country => 
@@ -118,7 +150,6 @@ const App = () => {
           )
         }
       </ul>
-      {/* <Country country={displayCountry}/> */}
       <Country name={newCountryName ? newCountryName : "undefied"} capital={newCapital} area={newArea} flag={newFlag} languages={newLanguages} temp={newTemp} weatherIcon={newWeatherIcon} wind={newWind}/>
     </div>
   )

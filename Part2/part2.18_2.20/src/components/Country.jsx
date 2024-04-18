@@ -19,8 +19,8 @@ const Country = (props) => {
     <img src={props.flag} width="300" height="200"></img>
     <h3>Weather in {props.capital}</h3>
     <p>Temperature {props.temp} Celcius</p>
-    <img src={props.weatherIcon} width="300" height="200"></img>
-    <p>Wind{props.wind} m/s</p>
+    <img src={props.weatherIcon} width="100" height="100"></img>
+    <p>Wind {props.wind} m/s</p>
 
   </div>
   )

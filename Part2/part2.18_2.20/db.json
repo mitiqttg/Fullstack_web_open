@@ -22,7 +22,7 @@
   },
   "visibility": 10000,
   "wind": {
-    "speed": 4.47,
+    "speed": 100,
     "deg": 60,
     "gust": 6.71
   },
@@ -42,3 +42,4 @@
   "name": "Helsinki",
   "cod": 200
 }
+
