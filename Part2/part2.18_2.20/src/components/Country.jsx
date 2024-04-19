@@ -16,11 +16,12 @@ const Country = (props) => {
           </li>
         )}
     </ul>
+    <h3>Flag</h3>
     <img src={props.flag} width="300" height="200"></img>
     <h3>Weather in {props.capital}</h3>
-    <p>Temperature {props.temp} Celcius</p>
-    <img src={props.weatherIcon} width="100" height="100"></img>
-    <p>Wind {props.wind} m/s</p>
+    <p>Temperature: {props.temp} Celcius</p>
+    <img src={props.weatherIcon} width="120" height="120"></img>
+    <p>Wind: {props.wind} m/s</p>
 
   </div>
   )

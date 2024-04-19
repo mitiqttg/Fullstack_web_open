@@ -3,7 +3,6 @@ import Filter from './components/Filter'
 import countryService from './services/country'
 import Notification from './components/Notification'
 import Country from './components/Country'
-import axios from 'axios'
 
 
 const App = () => {
@@ -51,6 +50,7 @@ const App = () => {
       
       setLat('')
       setLon('')
+      setFilteredCountry([])
     } else {
       setFilteredCountry([])
       setNewCountryName("")
@@ -123,7 +123,6 @@ const App = () => {
     setLanguages(countryObject.languages)
 
     //  Promise cannot be executyed here somehow, only the data not from promises got loaded
-
     countryService
       .getWeatherCountryCapital(countryObject.capitalInfo.latlng[0], countryObject.capitalInfo.latlng[1], api_key)
       .then(
@@ -137,11 +136,16 @@ const App = () => {
 
   return (
     <div className='mainBody'>
-      <h1>Country</h1>
-
-      <Filter filterName="filterCountry" handleFilterCountry={handleFilterCountry} />
-      <Notification message={message} type={"notify"} />
-      { filteredCountry.length >= 2 ? <h2>Countries</h2> : null }
+      <div className='fixFilter'>
+        <div>
+        <h3 className='fixHead'>Filter countries</h3>
+        <Filter filterName="filterCountry" handleFilterCountry={handleFilterCountry} />
+        </div>
+        <Notification message={message} type={"notify"} />
+      </div>
+      <div>
+      { filteredCountry.length >= 2 ? <h2 className='fixMatches'>Countries match</h2> : null }
+      <div className='fixList'>
       <ul>
         { 
           filteredCountry.map(country => 
@@ -150,7 +154,11 @@ const App = () => {
           )
         }
       </ul>
+      </div>
+      <div className='fixCountry'>
       <Country name={newCountryName ? newCountryName : "undefied"} capital={newCapital} area={newArea} flag={newFlag} languages={newLanguages} temp={newTemp} weatherIcon={newWeatherIcon} wind={newWind}/>
+      </div>
+      </div>
     </div>
   )
 }
