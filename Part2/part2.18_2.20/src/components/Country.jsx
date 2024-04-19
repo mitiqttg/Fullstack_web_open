@@ -20,7 +20,10 @@ const Country = (props) => {
     <img src={props.flag} width="300" height="200"></img>
     <h3>Weather in {props.capital}</h3>
     <p>Temperature: {props.temp} Celcius</p>
-    <img src={props.weatherIcon} width="120" height="120"></img>
+    <div className="flexComp"> 
+      <img src={props.weatherIcon} width="120" height="120"></img>
+      <p>{props.description}</p>
+    </div>
     <p>Wind: {props.wind} m/s</p>
 
   </div>

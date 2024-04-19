@@ -20,6 +20,7 @@ const App = () => {
   const [newTemp, setTemp] = useState(0) 
   const [newWeatherIcon, setWeatherIcon] = useState('') 
   const [newWind, setWind] = useState('') 
+  const [newDesc, setDesc] = useState('') 
 
   const [newLat, setLat] = useState(0) 
   const [newLon, setLon] = useState(0) 
@@ -47,6 +48,7 @@ const App = () => {
       setTemp(0)
       setWeatherIcon('')
       setWind('')
+      setDesc('')
       
       setLat('')
       setLon('')
@@ -93,6 +95,7 @@ const App = () => {
             setTemp(Number(returnedWeather.main.temp -273.15).toFixed(2));
             setWeatherIcon(`https://openweathermap.org/img/wn/${returnedWeather.weather[0].icon}@2x.png`)
             setWind(returnedWeather.wind.speed)
+            setDesc(returnedWeather.weather[0].description)
           }
         )
       } else if (filtered.length === 0) {
@@ -105,6 +108,12 @@ const App = () => {
         setArea('')
         setFlag('')
         setLanguages('')
+        setTemp(0)
+        setWeatherIcon('')
+        setWind('')
+        setDesc('')
+        setLat('')
+        setLon('')
       } else {
         setFilteredCountry([])
         setMessage(`Too many matches, specify for another filter`)
@@ -130,6 +139,7 @@ const App = () => {
           setTemp(Number(returnedWeather.main.temp -273.15).toFixed(2));
           setWeatherIcon(`https://openweathermap.org/img/wn/${returnedWeather.weather[0].icon}@2x.png`)
           setWind(returnedWeather.wind.speed)
+          setDesc(returnedWeather.weather[0].description)
         }
     )
   }
@@ -156,7 +166,7 @@ const App = () => {
       </ul>
       </div>
       <div className='fixCountry'>
-      <Country name={newCountryName ? newCountryName : "undefied"} capital={newCapital} area={newArea} flag={newFlag} languages={newLanguages} temp={newTemp} weatherIcon={newWeatherIcon} wind={newWind}/>
+      <Country name={newCountryName ? newCountryName : "undefied"} capital={newCapital} area={newArea} flag={newFlag} languages={newLanguages} temp={newTemp} weatherIcon={newWeatherIcon} wind={newWind} description={newDesc}/>
       </div>
       </div>
     </div>

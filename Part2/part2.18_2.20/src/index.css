@@ -118,6 +118,12 @@ h2 {
   height: 100%;
   display: flex;
 }
+.flexComp {
+  display: flex;
+  align-content: center;
+  align-items:center;
+  top: 30%;
+}
 .fixHead {
   position: fixed; 
   top: 28%;

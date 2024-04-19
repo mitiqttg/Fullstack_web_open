@@ -19,5 +19,5 @@ How to run locally:
 - Finally run `npm run dev` and go to your localhost
 
 - Result
-<img src="" width="800" height="500">
-<img src="" width="800" height="500">
+<img src=".\public\CountryAppGIF.gif" width="500" height="300">
+<img src=".\public\countryapp.png" width="500" height="300">
