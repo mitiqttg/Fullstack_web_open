@@ -109,7 +109,7 @@ const App = () => {
     console.log("we are checking", thePerson[0].name)
     let result = confirm(`Delete ${thePerson[0].name}?`)
     if (result === true)  {
-        axios.delete(`http://localhost:3001/persons/${id}/`)
+        axios.delete(`/api/persons/${id}/`)
           .then((response) => {
           const newPerson = persons.filter((person) => person.id !== id)
           setPersons(newPerson)
