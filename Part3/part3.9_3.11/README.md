@@ -1,5 +1,5 @@
 # React + Vite
-The online deployment can be found at: `https://tonic-blue.fly.dev/`
+The online deployment can be found at: `...`
 
 How to run development mode locally: 
 - Open Integrated Terminal at folder Persons_frontend

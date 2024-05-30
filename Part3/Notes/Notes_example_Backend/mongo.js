@@ -6,9 +6,12 @@ if (process.argv.length<3) {
 }
 
 const password = process.argv[2]
+// const password = "hahadoconga6699"
 
 const url =
-  `mongodb+srv://fullstack3:${password}@cluster0.k6ilt7k.mongodb.net/noteApp?retryWrites=true&w=majority`
+  // `mongodb+srv://fullstack3:hahadoconga6699@cluster0.k6ilt7k.mongodb.net/noteApp?retryWrites=true&w=majority`
+  `mongodb+srv://fullstack3:${password}@cluster0.k6ilt7k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
+  // `mongodb+srv://fullstack3:<password>@cluster0.k6ilt7k.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
 
 mongoose.set('strictQuery',false)
 mongoose.connect(url)
