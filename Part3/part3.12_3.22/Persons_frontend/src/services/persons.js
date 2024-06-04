@@ -9,9 +9,14 @@ const getAll = () => {
 const create = (newObject) => {
   const request = axios.post(baseUrl, newObject)
   return request.then(response => response.data)
+  .catch(error => {
+    console.log('this is my error creating person the whole shit', error);
+    // console.log("this is my error creating person", error.response.data.error);
+    // console.error('There was an error!', error.response.data.error);
+  });
 }
 
-const deletePerson = (id) => {  
+const deletePerson = (id) => {
   // confirm(`Delete ?`)
   return axios.delete(`${baseUrl}/${id}`)
   .then(response => response.data.filter(person => person.id !== id))
@@ -25,10 +30,9 @@ const updatePerson = (id, newNumber) => {
   .then(response => response.data)
   .catch(error => {
     console.error('There was an error updating!', error);
-});
-
+  });
 }
 
-export default { 
+export default {
   getAll, create, deletePerson, updatePerson 
 }

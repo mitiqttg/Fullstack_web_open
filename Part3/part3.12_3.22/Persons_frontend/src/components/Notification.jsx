@@ -1,16 +1,19 @@
 const Notification = ({ type, message }) => {
-    if (message === null) {
+    if (message === null || message === '') {
       return null
     }
-    if (type === "error") {
+
+    if (type === 'error') {
       return (
-        <div className="error">
+        <div className='error'>
         {message}
       </div>
       )
-    } else if (type === "notify") {
+    } 
+    
+    if (type === 'notify') {
       return (
-        <div className="notify">
+        <div className='notify'>
         {message}
       </div>
       )

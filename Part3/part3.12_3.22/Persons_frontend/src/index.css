@@ -21,7 +21,11 @@ a {
   text-decoration: inherit;
 }
 a:hover {
-  color: #3D405B;
+  color: #74ee5b;
+}
+
+ul li {
+  margin-bottom: 10px;
 }
 
 body {
@@ -42,13 +46,12 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #a2c9b7;
+  background-color: #34f199;
   cursor: pointer;
   transition: border-color 0.25s;
 }
 button:hover {
-  background-color: #81B29A;
-  border-color: #646cff;
+  background-color: #63f776;
 }
 button:focus,
 button:focus-visible {
@@ -83,8 +86,8 @@ h2 {
 }
 
 .error {
-  color: rgb(210, 94, 94);
-  background: lightgrey;
+  color: rgb(172, 39, 39);
+  background: rgb(255, 255, 255);
   font-size: 20px;
   border-style: solid;
   border-radius: 5px;
@@ -93,7 +96,7 @@ h2 {
 }
 .notify {
   color: rgb(85, 200, 85) ;
-  background: lightgrey;
+  background: rgb(255, 255, 255);
   font-size: 20px;
   border-style: solid;
   border-radius: 5px;

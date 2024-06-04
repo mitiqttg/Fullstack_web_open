@@ -5,25 +5,25 @@ require('dotenv').config()
 
 const Person = require('./models/person')
 let persons = [
-  { 
-    "id": 1,
-    "name": "Arto Hellas", 
-    "number": "040-123456"
+  {
+    'id': 1,
+    'name': 'Arto Hellas',
+    'number': '040-123456'
   },
-  { 
-    "id": 2,
-    "name": "Ada Lovelace", 
-    "number": "39-44-5323523"
+  {
+    'id': 2,
+    'name': 'Ada Lovelace',
+    'number': '39-44-5323523'
   },
-  { 
-    "id": 3,
-    "name": "Dan Abramov", 
-    "number": "12-43-234345"
+  {
+    'id': 3,
+    'name': 'Dan Abramov',
+    'number': '12-43-234345'
   },
-  { 
-    "id": 4,
-    "name": "Mary Poppendieck", 
-    "number": "39-23-6423122"
+  {
+    'id': 4,
+    'name': 'Mary Poppendieck',
+    'number': '39-23-6423122'
   }
 ]
 
@@ -42,12 +42,16 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  } else if (error.name === 'ValidationError') {
+    console.log('this is a log from error handler 2', error)
+    return response.status(400).json({ error: error.message })
+  }
+  console.log('this is a log from error handler 3', response)
   next(error)
-}   
+}
 
 app.use(
-  morgan(function (tokens, req, res) { 
+  morgan(function (tokens, req, res) {
     console.log(req)
     return [
       tokens.method(req, res),
@@ -55,8 +59,7 @@ app.use(
       tokens.status(req, res),
       tokens.res(req, res, 'content-length'), '-',
       tokens['response-time'](req, res), 'ms',
-      JSON.stringify(req.body) ? JSON.stringify(req.body) : `` 
-    ].join(' ')
+      JSON.stringify(req.body) ? JSON.stringify(req.body) : ''].join(' ')
   })
 )
 
@@ -66,30 +69,26 @@ app.get('/', (request, response) => {
 
 app.get('/info', async (request, response) => {
   response.send(`<p>Phonebook has info for ${await Person.countDocuments({}).exec()} people </br> </br>${Date()}</p>`)
-  console.log("_____________________", Person)
 })
 
 app.get('/api/persons', (request, response) => {
   Person.find({}).then(person => {
     response.json(person)
   })
-  console.log("_____________________", Person)
-  console.log(typeof Person)
-
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const body = request.body
 
   if ( persons.map(person => person.name).includes(body.name) ) {
-    return response.status(400).json({ 
-      error: `${body.name} already exists in the phonebook` 
+    return response.status(400).json({
+      error: `${body.name} already exists in the phonebook`
     })
   }
 
   if (!body.name || !body.number) {
-    return response.status(400).json({ 
-      error: `The name or number is missing` 
+    return response.status(400).json({
+      error: 'The name or number is missing'
     })
   }
 
@@ -98,25 +97,22 @@ app.post('/api/persons', (request, response) => {
     number: body.number,
   })
   // persons = persons.concat(person)
-
   // response.json(person)
+
   person.save().then(savedPerson => {
     response.json(savedPerson)
-  })
+  }).catch(error => next(error))
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
   // const person = persons.find(person => person.id === id)
-    Person.findById(request.params.id).then(person => 
-     { if (person) {
+  Person.findById(request.params.id).then(person => {
+    if (person) {
       response.json(person)
-      } else {
+    } else {
       response.status(404).end()
-      }
-    })
-    .catch(error => next(error))
-    console.log("_____________________---------------------", Person)
-
+    }
+  }).catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
@@ -125,22 +121,25 @@ app.delete('/api/persons/:id', (request, response, next) => {
   // console.log('persons deleted, remaining:', persons)
   // response.status(204).end()
   Person.findByIdAndDelete(request.params.id)
-  .then(result => {
-    response.status(204).end()
-  })
-  .catch(error => next(error))
-
+    .then(result => {
+      response.status(204).end()
+    }).catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
-  const body = request.body
+  // const body = request.body
+  const { name, number } = request.body
 
   const person = ({
-    name: body.name,
-    number: body.number,
+    name: name,
+    number: number,
   })
-  console.log("This is myyyy idddd", request.params.id)
-  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+  console.log('This is myyyy idddd', request.params.id)
+  Person.findByIdAndUpdate(
+    request.params.id,
+    { name, number },
+    { new: true, runValidators: true, context: 'query' }
+  )
     .then(updatedPerson => {
       response.json(updatedPerson)
     })
