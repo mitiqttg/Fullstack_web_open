@@ -10,3 +10,4 @@ How to run locally:
 - Run `npm run dev`
 - Result
 
+"THIS IS BS, JUST A MIMIC OF PHONEBOOK"
