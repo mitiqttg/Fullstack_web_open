@@ -1,9 +1,16 @@
-const Filter = (props) => {
-    return (
-        <form>
-            <div><input className="filterInput" key={props.filterCountry} id={props.filterCountry} onChange={props.handleFilterCountry} /></div>
-        </form>
-    )
-}
-  
-export default Filter
+import React from 'react';
+
+const Filter = ({ handleFilterCountry }) => {
+  return (
+    <div className="filter-container">
+      <input 
+        type="text" 
+        className="filterInput"
+        placeholder="Search for a country..."
+        onChange={handleFilterCountry}
+      />
+    </div>
+  );
+};
+
+export default Filter;

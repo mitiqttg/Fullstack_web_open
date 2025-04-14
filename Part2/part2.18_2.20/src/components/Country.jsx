@@ -1,33 +1,30 @@
-const Country = (props) => {
-  if (props.name === "undefied") {
-    return null
-  }
+import React from 'react';
+
+const Country = ({ country, weather }) => {
   return (
-  <div>
-    <h1>{props.name}</h1>
-    <p>Capital: {props.capital}</p>
-    <p>Area: {props.area}</p>
+    <div className="container">
+      <div className="output-container">
+        <div className="box left-column">
+          <h2>{country.name}</h2>
+          <p><strong>Capital:</strong> {country.capital}</p>
+          <p><strong>Area:</strong> {country.area.toLocaleString('en', { useGrouping: true })} km²</p>
+          <p><strong>Population:</strong> {country.population.toLocaleString('en', { useGrouping: true })}</p>
+          <p><strong>Languages:</strong> {country.languages}</p>
+          <img src={country.flag} alt="flag" width="50%" />
+        </div>
 
-    <h3>Languages</h3>
-    <ul>
-        {Object.values(props.languages).map(language => 
-          <li key={Math.random().toString()}> 
-          {language} 
-          </li>
+        {weather && (
+          <div className="box right-column">
+            <h2>Weather in {country.capital}</h2>
+            <p><strong>Temperature:</strong> {weather.temperature}°C</p>
+            <p><strong>Wind Speed:</strong> {weather.windSpeed} m/s</p>
+            <p>{weather.description}</p>
+            <img src={weather.icon} alt="weather icon" className="weather-icon" />
+          </div>
         )}
-    </ul>
-    <h3>Flag</h3>
-    <img src={props.flag} width="300" height="200"></img>
-    <h3>Weather in {props.capital}</h3>
-    <p>Temperature: {props.temp} Celcius</p>
-    <div className="flexComp"> 
-      <img src={props.weatherIcon} width="120" height="120"></img>
-      <p>{props.description}</p>
+      </div>
     </div>
-    <p>Wind: {props.wind} m/s</p>
+  );
+};
 
-  </div>
-  )
-}
-
-export default Country
+export default Country;

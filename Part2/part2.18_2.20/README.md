@@ -13,11 +13,13 @@ How to run locally:
 - NB: Use an environment variable to save the key. Assuming your API key is `aa26841n3n4v41m34rv0`, you can set it by:
     ```
     export VITE_SOME_KEY=aa26841n3n4v41m34rv0 && npm run dev // For Linux/macOS Bash
-    ($env:VITE_SOME_KEY="aa26841n3n4v41m34rv0") -and (npm run dev) // For Windows PowerShell
-    set "VITE_SOME_KEY=aa26841n3n4v41m34rv0" && npm run dev // For Windows cmd.exe
+    ($env:VITE_SOME_KEY="5f35b0af8dff8a1146f933d450039052
+") -and (npm run dev) // For Windows PowerShell
+    set "VITE_SOME_KEY=5f35b0af8dff8a1146f933d450039052" && npm run dev // For Windows cmd.exe
     ```
+    Or alternatively, create a new file in the root of the folder name `.env`, put `VITE_SOME_KEY=aa26841n3n4v41m34rv0` there
 - Finally run `npm run dev` and go to your localhost
 
 - Result
-<img src=".\public\CountryAppGIF.gif" width="500" height="300">
-<img src=".\public\countryapp.png" width="500" height="300">
+<img src=".\public\countryApp.gif" width="800" height="300">
+[![Watch the video](.\public\countryapp.png)](.\public\countryglance.mp4)
