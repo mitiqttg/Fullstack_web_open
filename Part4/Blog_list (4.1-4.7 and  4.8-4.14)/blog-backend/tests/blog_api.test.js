@@ -30,7 +30,6 @@ test('there are six blogs', async () => {
 
 test('Blogs have properties "id"', async () => {
   const response = await api.get('/api/blogs')
-
   const ids = response.body.map(e => e.id)
   console.log(ids)
   assert(ids.length, 6)
@@ -39,7 +38,7 @@ test('Blogs have properties "id"', async () => {
 test('a valid blog can be added ', async () => {
   const newBlog = {
     title: 'Quantum Malicious',
-    author: 'Anthony Dick',
+    author: 'Anthony Hopkids',
     url: 'http://www.csqt.edu/hahaha/qm',
     likes: 28
   }

@@ -10,6 +10,7 @@ const totalLikes = (blogs) => {
     (accumulator, currentValue) => accumulator + currentValue.likes,
     0,)
 }
+
 const favoriteBlog = (blogs) => {
   let result = {}
   const _ = require('lodash')
