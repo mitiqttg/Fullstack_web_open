@@ -1,83 +1,114 @@
 const Blog = require('../models/blog')
+const user = require('../models/user')
 const User = require('../models/user')
+const mongoose = require('mongoose')
 
 const initialUsers = [
   {
     username: 'malasa',
-    name: 'Hiljalainen',
+    name: 'malasa',
     password: 'salainen',
+    _id: new mongoose.Types.ObjectId('686b86ee795c7b0012f6b511'),
+    blogs: [
+      {
+        _id: new mongoose.Types.ObjectId('11195c41131534cfa778dbc1'),
+        title: 'React patterns',
+        author: 'Michael Chan',
+        url: 'https://reactpatterns.com/',
+        likes: 7,
+      },
+      {
+        _id: new mongoose.Types.ObjectId('11195c41131534cfa778dbc2'),
+        title: 'Go To Statement Considered Harmful',
+        author: 'Edsger W. Dijkstra',
+        url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
+        likes: 5,
+      }
+    ]
   },
   {
-    username: 'Miti',
-    name: 'Mm T.t',
+    username: 'miti',
+    name: 'MrT',
     password: '123456',
+    _id: new mongoose.Types.ObjectId('222b86ee795c7b0012f6b522'),
+    blogs: [
+      {
+        _id: new mongoose.Types.ObjectId('68695c41131534cfa778dbc3'),
+        title: 'Canonical string reduction',
+        author: 'Edsger W. Dijkstra',
+        url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+        likes: 12,
+      },
+      {
+        _id: new mongoose.Types.ObjectId('68695c41131534cfa778dbc4'),
+        title: 'First class tests',
+        author: 'Robert C. Martin',
+        url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
+        likes: 10,
+      }
+    ]
   },
 ]
 
 const initialBlogs = [
   {
-    _id: '5a422a851b54a676234d17f7',
+    _id: new mongoose.Types.ObjectId('11195c41131534cfa778dbc1'),
     title: 'React patterns',
     author: 'Michael Chan',
     url: 'https://reactpatterns.com/',
     likes: 7,
-    __v: 0
-    // user: {
-    //   username: 'michael',
-    //   name: 'michael',
-    //   id : '5a422a851b54'
-    // }
+    user: {
+      username: 'malasa',
+      name: 'malasa',
+      _id: new mongoose.Types.ObjectId('686b86ee795c7b0012f6b511')
+    }
   },
   {
-    _id: '5a422aa71b54a676234d17f8',
+    _id: new mongoose.Types.ObjectId('11195c41131534cfa778dbc2'),
     title: 'Go To Statement Considered Harmful',
     author: 'Edsger W. Dijkstra',
     url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
     likes: 5,
-    __v: 0
+    user: {
+      username: 'malasa',
+      name: 'malasa',
+      _id: new mongoose.Types.ObjectId('686b86ee795c7b0012f6b511')
+    }
   },
   {
-    _id: '5a422b3a1b54a676234d17f9',
+    _id: new mongoose.Types.ObjectId('68695c41131534cfa778dbc3'),
     title: 'Canonical string reduction',
     author: 'Edsger W. Dijkstra',
     url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
     likes: 12,
-    __v: 0
+    user: {
+      username: 'Miti',
+      name: 'MrT',
+      _id: new mongoose.Types.ObjectId('222b86ee795c7b0012f6b522')
+    }
   },
   {
-    _id: '5a422b891b54a676234d17fa',
+    _id: new mongoose.Types.ObjectId('68695c41131534cfa778dbc4'),
     title: 'First class tests',
     author: 'Robert C. Martin',
     url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
     likes: 10,
-    __v: 0
-  },
-  {
-    _id: '5a422ba71b54a676234d17fb',
-    title: 'TDD harms architecture',
-    author: 'Robert C. Martin',
-    url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
-    likes: 0,
-    __v: 0
-  },
-  {
-    _id: '5a422bc61b54a676234d17fc',
-    title: 'Type wars',
-    author: 'Robert C. Martin',
-    url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
-    likes: 2,
-    __v: 0
+    user: {
+      username: 'Miti',
+      name: 'MrT',
+      _id: new mongoose.Types.ObjectId('222b86ee795c7b0012f6b522')
+    }
   }
 ]
 
 
-const nonExistingId = async () => {
-  const blog = new Blog({ content: 'willremovethissoon' })
-  await blog.save()
-  await blog.deleteOne()
+// const nonExistingId = async () => {
+//   const blog = new Blog({ content: 'willremovethissoon' })
+//   await blog.save()
+//   await blog.deleteOne()
 
-  return blog._id.toString()
-}
+//   return blog._id.toString()
+// }
 
 const blogsInDb = async () => {
   const blogs = await Blog.find({})
@@ -90,5 +121,5 @@ const usersInDb = async () => {
 }
 
 module.exports = {
-  initialBlogs, nonExistingId, blogsInDb, usersInDb, initialUsers
+  initialBlogs, blogsInDb, usersInDb, initialUsers
 }

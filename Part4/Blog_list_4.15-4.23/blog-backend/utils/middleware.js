@@ -1,4 +1,6 @@
 const logger = require('./logger')
+const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 
 const requestLogger = (request, response, next) => {
   logger.info('Method:', request.method)
@@ -21,20 +23,51 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).json({ error: 'expected `username` to be unique' })
   } else if (error.name ===  'JsonWebTokenError') {
     return response.status(400).json({ error: 'token missing or invalid' })
+  } else if (error.name === 'TokenExpiredError') {
+    return response.status(401).json({
+      error: 'token expired'
+    })
   }
 
   next(error)
 }
 
-// const tokenExtractor = (request, response, next) => {
-//   // code that extracts the token
-//   return response.status(200).json({ token: request.token })
-//   next()
-// }
+// This middleware is used to extract the token from the request headers, you need to change the implementation
+// in the controllers/blogs.js from "request" to "request.token"
+const tokenExtractor = (request, response, next) => {
+  const authorization = request.headers['authorization']
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    request.token = authorization.substring(7)
+  } else {
+    request.token = null
+  }
+  next()
+}
+
+const userExtractor = async (request, response, next) => {
+  const token = request.token
+  console.log('token:', token)
+  if (!token) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
+
+  try {
+    const decodedToken = jwt.verify(token, process.env.SECRET)
+    if (!decodedToken.id) {
+      return response.status(401).json({ error: 'token invalid' })
+    }
+    request.user = await User.findById(decodedToken.id)
+  } catch (error) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+
+  next()
+}
 
 module.exports = {
   requestLogger,
   unknownEndpoint,
   errorHandler,
-  // tokenExtractor
+  tokenExtractor,
+  userExtractor
 }
