@@ -1,0 +1,39 @@
+{
+  "blogs": [
+    {
+      "id": "2",
+      "title": "JavaScript Fundamentals",
+      "author": "Code Master",
+      "url": "https://example.com/js-fundamentals",
+      "likes": 42
+    },
+    {
+      "id": "3",
+      "title": "HTTP Methods Explained",
+      "author": "Network Guru",
+      "url": "https://example.com/http-methods",
+      "likes": 28
+    },
+    {
+      "id": "c223",
+      "title": "Testing Blog System",
+      "author": "QA Tester",
+      "url": "https://example.com/testing-blog",
+      "likes": 5
+    },
+    {
+      "id": "4348",
+      "title": "Your jeew",
+      "author": "Web Developer",
+      "url": "https://example.com/kkk",
+      "likes": 13
+    },
+    {
+      "id": "3db3",
+      "title": "JavaScript Fundamentals",
+      "author": "Code Master",
+      "url": "https://example.com/js-fundamentals",
+      "likes": 42
+    }
+  ]
+}
