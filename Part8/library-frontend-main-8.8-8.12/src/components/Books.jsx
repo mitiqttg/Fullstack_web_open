@@ -5,7 +5,6 @@ const Books = () => {
   const { data, loading, error } = useQuery(ALL_BOOKS)
   const books = data?.allBooks || []
 
-  // if (!props.show) return null
   if (loading) return <div>Loading...</div>
   if (error) return <div>Error loading books</div>
 

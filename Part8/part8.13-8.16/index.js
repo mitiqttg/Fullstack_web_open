@@ -35,10 +35,10 @@ const typeDefs = `
   }
 
   type Book {
+    id: ID!
     title: String!
     author: Author!
     published: Int!
-    id: ID!
     genres: [String!]!
   }
 
@@ -118,7 +118,7 @@ const resolvers = {
         id: user._id,
       }
 
-      return { value: jwt.sign(userForToken, JWT_SECRET) }
+      return { value: jwt.sign(userForToken, JWT_SECRET, {expiresIn: '15m'}) }
     },
 
     addBook: async (root, args, context) => {
@@ -206,8 +206,15 @@ startStandaloneServer(server, {
         const decodedToken = jwt.verify(token, JWT_SECRET)
         const currentUser = await User.findById(decodedToken.id)
         return { currentUser }
-      } catch {
-        return {}
+      } catch (error) {
+        if (error.name === 'TokenExpiredError') {
+          throw new GraphQLError('jwt expired', {
+            extensions: { code: 'UNAUTHENTICATED' }
+          })
+        }
+        throw new GraphQLError('Invalid token', {
+          extensions: { code: 'UNAUTHENTICATED' }
+        })
       }
     }
     return {}

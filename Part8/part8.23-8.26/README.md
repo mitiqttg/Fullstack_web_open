@@ -90,3 +90,11 @@ mutation EditAuthor($name: String!, $setBornTo: Int!) {
 * If your server uses a different login field name or different mutation names, adapt the examples above accordingly.
 
 ---
+
+If you'd like, I can:
+
+* Add README badges (build / tests),
+* Create a shorter `QUICKSTART.md`, or
+* Add curl examples for quick testing.
+
+Tell me which and I will update the file.
