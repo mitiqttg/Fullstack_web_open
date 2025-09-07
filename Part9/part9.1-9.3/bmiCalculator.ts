@@ -1,17 +1,42 @@
-const calculateBmi = (height: number, weight: number) => {
-  // console.log('This is my BMI', weight / (height / 100) ** 2 );
-  const x = weight / (height / 100) ** 2;
-  if (x < 18.5) {
+interface CalculateValues {
+  height: number;
+  weight: number;
+}
+
+const parseBmiArguments = (args: string[]): CalculateValues => {
+  if (args.length < 4) throw new Error('Not enough arguments');
+
+  const height = Number(args[2]);
+  const weight = Number(args[3]);
+
+  if (isNaN(height) || isNaN(weight)) {
+    throw new Error('Provided values were not numbers!');
+  }
+
+  return { height, weight };
+};
+
+const calculateBmi = (height: number, weight: number): string => {
+  const bmi = weight / (height / 100) ** 2;
+
+  if (bmi < 18.5) {
     return 'Underweight';
-  } else if (x >= 18.5 && x < 25) {
+  } else if (bmi >= 18.5 && bmi < 25) {
     return 'Normal range';
-  } else if (x >= 25 && x < 30) {
+  } else if (bmi >= 25 && bmi < 30) {
     return 'Overweight';
   } else {
     return 'Obese';
   }
+};
+
+try {
+  const { height, weight } = parseBmiArguments(process.argv);
+  console.log(calculateBmi(height, weight));
+} catch (error: unknown) {
+  let errorMessage = 'Something bad happened.';
+  if (error instanceof Error) {
+    errorMessage += ' Error: ' + error.message;
+  }
+  console.log(errorMessage);
 }
-
-console.log(calculateBmi(180, 100));
-
-calculateBmi(178, 75);
